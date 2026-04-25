@@ -41,7 +41,10 @@ const getChatMessages = async (req, res) => {
 // Send message
 const sendMessage = async (req, res) => {
   try {
-    const { chatId, content, model = 'groq', useRAG = false } = req.body;
+    const { chatId, content, message, model = 'groq', useRAG = false } = req.body;
+    const userQuery = content || message; // support both field names
+
+    if (!userQuery) return res.status(400).json({ message: 'Message content is required' });
 
     let chat;
     if (chatId) {
@@ -50,12 +53,12 @@ const sendMessage = async (req, res) => {
     } else {
       chat = await Chat.create({
         user: req.user._id,
-        title: content.slice(0, 50) || 'New Chat',
+        title: userQuery.slice(0, 50) || 'New Chat',
       });
     }
 
     // Save user message
-    const userMessage = await Message.create({ chat: chat._id, role: 'user', content });
+    const userMessage = await Message.create({ chat: chat._id, role: 'user', content: userQuery });
     chat.messages.push(userMessage._id);
 
     // Get conversation history
@@ -64,9 +67,9 @@ const sendMessage = async (req, res) => {
 
     // RAG: inject document context if enabled
     if (useRAG) {
-      const chunks = await getRelevantChunks(content, req.user._id);
+      const chunks = await getRelevantChunks(userQuery, req.user._id);
       if (chunks.length) {
-        const ragPrompt = buildRAGPrompt(chunks, content);
+        const ragPrompt = buildRAGPrompt(chunks, userQuery);
         messages[messages.length - 1].content = ragPrompt;
       }
     }
@@ -90,10 +93,12 @@ const sendMessage = async (req, res) => {
 
     res.json({
       chatId: chat._id,
+      reply: aiContent,
       userMessage,
       assistantMessage,
     });
   } catch (error) {
+    console.error('sendMessage error:', error.message);
     res.status(500).json({ message: error.message });
   }
 };

@@ -9,6 +9,7 @@ router.get('/', getChats);
 router.post('/', createChat);
 router.get('/:chatId/messages', getChatMessages);
 router.post('/message', sendMessage);
+router.post('/chat', sendMessage); // alias used by frontend
 router.delete('/:chatId', deleteChat);
 
 module.exports = router;
