@@ -89,7 +89,7 @@ export default function Workspace() {
           {activeDoc ? (
             <div className="flex items-center gap-2 text-sm text-indigo-300 bg-indigo-500/10 border border-indigo-500/30 px-3 py-1 rounded-full">
               <FileText size={14} />
-              <span className="truncate max-w-[200px]">{activeDoc.originalname}</span>
+              <span className="truncate max-w-[200px]">{activeDoc.originalName || activeDoc.originalname}</span>
             </div>
           ) : (
             <span className="text-xs text-white/30">No document selected</span>

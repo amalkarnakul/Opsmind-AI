@@ -72,7 +72,7 @@ const ChatSidebar = ({ onSelectDoc }) => {
                 }`}
               >
                 <FileText className="w-4 h-4 text-indigo-400 shrink-0" />
-                <p className="text-sm truncate text-white/80 flex-1">{doc.originalname}</p>
+                <p className="text-sm truncate text-white/80 flex-1">{doc.originalName || doc.originalname}</p>
                 {deletingId === doc._id ? (
                   <span className="w-3.5 h-3.5 border border-white/30 border-t-white rounded-full animate-spin block shrink-0" />
                 ) : (
