@@ -41,7 +41,7 @@ const getChatMessages = async (req, res) => {
 // Send message
 const sendMessage = async (req, res) => {
   try {
-    const { chatId, content, message, model = 'groq', useRAG = false } = req.body;
+    const { chatId, content, message, model = 'gemini', useRAG = false } = req.body;
     const userQuery = content || message; // support both field names
 
     if (!userQuery) return res.status(400).json({ message: 'Message content is required' });
